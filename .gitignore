@@ -1,0 +1,88 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Binaries and executable files
+/bin/
+/out/
+/dist/
+/build/
+
+# Temporary files
+*.log
+*.tmp
+*.out
+*.swp
+*.bak
+*.old
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE and editor-specific files
+.idea/
+.vscode/
+*.code-workspace
+*.sublime-*
+
+# Dependency directories
+/vendor/
+Gopkg.lock
+Gopkg.toml
+go.sum
+
+# Coverage and test reports
+coverage.out
+*.coverprofile
+
+# Generated code
+gen/
+mock/
+
+# Configuration files
+*.env
+.env.local
+.env.test
+.env.production
+
+# Debugging files
+trace.out
+profile.out
+pprof/
+
+# Docker
+docker-compose.override.yml
+*.dockerfile
+/.env
+
+# Domain-Driven Design structure (specific to project organization)
+# Ignore auto-generated or build-specific subdirectories
+/domain/generated/
+/application/generated/
+/infrastructure/generated/
+/interfaces/generated/
+
+# Temp and cache files
+/tmp/
+/cache/
+
+# Swagger or API documentation
+swagger.json
+*.swagger
+api-docs/
+
+# Node.js for frontend integration (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# System files
+*.icloud
+*.crdownload
+*.lock
+*.tmp
