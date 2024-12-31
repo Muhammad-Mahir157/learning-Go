@@ -25,3 +25,14 @@ func NewTimeLogEntity(startTime time.Time, endTime time.Time, description string
 		Description:   description,
 	}
 }
+
+func ExistingTimeLogEntity(timeLogId uuid.UUID, startTime time.Time, endTime time.Time, description string) *TimeLog {
+	return &TimeLog{
+		TimeLogId:     timeLogId,
+		StartTime:     startTime,
+		EndTime:       endTime,
+		LoggedAt:      time.Now(),
+		TotalDuration: endTime.Sub(startTime).String(),
+		Description:   description,
+	}
+}

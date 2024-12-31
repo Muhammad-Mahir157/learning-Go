@@ -7,6 +7,7 @@ import (
 	"github.com/Muhammad-Mahir157/clockify-app-clone/application/query"
 	"github.com/Muhammad-Mahir157/clockify-app-clone/domain/entities"
 	"github.com/Muhammad-Mahir157/clockify-app-clone/domain/repositories"
+	"github.com/google/uuid"
 )
 
 type TimeLogService struct {
@@ -17,7 +18,7 @@ func NewTimeLogService(timeLogRepository repositories.TimeLogRepository) interfa
 	return &TimeLogService{Repo: timeLogRepository}
 }
 
-func (srvc TimeLogService) AddTimeLog(timeLogReq *common.TimeLogRequestModel) (*common.TimeLogResponse, error) {
+func (srvc TimeLogService) AddTimeLog(timeLogReq *common.AddTimeLogRequestModel) (*common.TimeLogResponse, error) {
 	newTimeLogEntity := entities.NewTimeLogEntity(
 		timeLogReq.StartTime,
 		timeLogReq.EndTime,
@@ -46,4 +47,41 @@ func (srvc TimeLogService) GetAllTimeLogs() (*query.TimeLogQueryResponseList, er
 	}
 
 	return &queryResponse, nil
+}
+
+func (srvc TimeLogService) UpdateTimeLog(timeLogReq *common.UpdateTimeLogRequestModel) (*common.TimeLogResponse, error) {
+	updatedTimeLogEntity := entities.ExistingTimeLogEntity(
+		timeLogReq.TimeLogId,
+		timeLogReq.StartTime,
+		timeLogReq.EndTime,
+		timeLogReq.Description,
+	)
+
+	updatedTimeLog, err := srvc.Repo.Update(updatedTimeLogEntity)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.FromTimeLogEntityToResponse(updatedTimeLog), nil
+}
+
+func (srvc TimeLogService) DeleteTimeLog(timeLogId uuid.UUID) (bool, error) {
+	isTimeLogDeleted, err := srvc.Repo.Delete(timeLogId)
+
+	if err != nil {
+		return false, err
+	}
+
+	return isTimeLogDeleted, nil
+}
+
+func (srvc TimeLogService) GetTimeLogById(timeLogId uuid.UUID) (*common.TimeLogResponse, error) {
+	updatedTimeLog, err := srvc.Repo.GetById(timeLogId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.FromTimeLogEntityToResponse(updatedTimeLog), nil
 }

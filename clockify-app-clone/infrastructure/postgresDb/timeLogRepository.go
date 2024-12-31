@@ -5,6 +5,7 @@ import (
 
 	"github.com/Muhammad-Mahir157/clockify-app-clone/domain/entities"
 	"github.com/Muhammad-Mahir157/clockify-app-clone/domain/repositories"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -18,42 +19,69 @@ func NewTimeLogRepository(db *gorm.DB) repositories.TimeLogRepository {
 
 func (repo *TimeLogRepository) Create(timeLogEntity *entities.TimeLog) (*entities.TimeLog, error) {
 
-	//mapping the entities into models here ...
-	timeLogDbModel := fromEntitytoDbModel(timeLogEntity)
-	fmt.Println("DB Model inserted: ", timeLogDbModel)
-	err := repo.DB.Create(timeLogDbModel).Error
+	//mapping the entity into db model
+	timeLog := fromEntitytoDbModel(timeLogEntity)
+
+	err := repo.DB.Create(timeLog).Error
 	if err != nil {
 		return nil, err
 	}
 
-	//return repo.FindById(dbProduct.Id),nil
-	return nil, nil
+	return repo.GetById(timeLog.TimeLogId)
+	//return nil, nil
 }
 
-// func GetById(id uint) (*entities.TimeLog, error){
+func (repo *TimeLogRepository) GetById(timeLogId uuid.UUID) (*entities.TimeLog, error) {
+	timeLog := &TimeLog{}
 
-// }
-
-func (repo *TimeLogRepository) GetAll() ([]*entities.TimeLog, error) {
-	loggedTimeList := []TimeLog{}
-
-	err := repo.DB.Find(&loggedTimeList).Error
+	err := repo.DB.Where("time_log_id = ?", timeLogId).First(timeLog).Error
 	if err != nil {
 		return nil, err
 	}
+
 	//mapping the db model into entity model
-	entityTimeLogList := make([]*entities.TimeLog, len(loggedTimeList))
-	for i, dbTimeLog := range loggedTimeList {
+	return fromDbToEntityModel(timeLog), nil
+}
+
+func (repo *TimeLogRepository) GetAll() ([]*entities.TimeLog, error) {
+	timeLogList := []TimeLog{}
+
+	err := repo.DB.Find(&timeLogList).Error
+	if err != nil {
+		return nil, err
+	}
+
+	//mapping the db model into entity model
+	entityTimeLogList := make([]*entities.TimeLog, len(timeLogList))
+	for i, dbTimeLog := range timeLogList {
 		entityTimeLogList[i] = fromDbToEntityModel(&dbTimeLog)
 	}
 
 	return entityTimeLogList, nil
 }
 
-// func Update(product *entities.TimeLog) (*entities.TimeLog, error){
+func (repo *TimeLogRepository) Update(updatedTimeLogEntity *entities.TimeLog) (*entities.TimeLog, error) {
 
-// }
+	//mapping the entity into db model
+	timeLog := fromEntitytoDbModel(updatedTimeLogEntity)
 
-// func Delete(id uint) error {
+	err := repo.DB.Where("time_log_id = ?", timeLog.TimeLogId).Save(timeLog).Error
+	if err != nil {
+		return nil, err
+	}
 
-// }
+	return repo.GetById(timeLog.TimeLogId)
+}
+
+func (repo *TimeLogRepository) Delete(timeLogId uuid.UUID) (bool, error) {
+	timeLog := &TimeLog{}
+
+	err := repo.DB.Delete(timeLog, timeLogId).Error
+	if err != nil {
+		return false, err
+	} else if repo.DB.RowsAffected < 1 {
+		return false, fmt.Errorf("row with id=%s cannot be deleted because it doesn't exist", timeLogId)
+	}
+
+	return true, nil
+}
