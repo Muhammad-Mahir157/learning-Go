@@ -1,9 +1,9 @@
-package request
+package models
 
 import (
 	"time"
 
-	"github.com/Muhammad-Mahir157/clockify-app-clone/application/common"
+	"github.com/Muhammad-Mahir157/clockify-app-clone/usecase"
 	"github.com/google/uuid"
 )
 
@@ -14,8 +14,8 @@ type UpdateTimeLogRequest struct {
 	Description string    `json:"description"`
 }
 
-func (req UpdateTimeLogRequest) ToUpdateLogTimeRequest() *common.UpdateTimeLogRequestModel {
-	return &common.UpdateTimeLogRequestModel{
+func (req UpdateTimeLogRequest) ToUpdateLogTimeRequest() *usecase.UpdateTimeLogRequestModel {
+	return &usecase.UpdateTimeLogRequestModel{
 		TimeLogId:   req.TimeLogId,
 		StartTime:   req.StartTime,
 		EndTime:     req.EndTime,

@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type TimeLogRepository interface {
+type TimeLog interface {
 	Create(timeLogEntity *entities.TimeLog) (*entities.TimeLog, error)
 	GetById(id uuid.UUID) (*entities.TimeLog, error)
 	GetAll() ([]*entities.TimeLog, error)

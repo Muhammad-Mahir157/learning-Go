@@ -13,7 +13,7 @@ type TimeLogRepository struct {
 	DB *gorm.DB
 }
 
-func NewTimeLogRepository(db *gorm.DB) repositories.TimeLogRepository {
+func NewTimeLogRepository(db *gorm.DB) repositories.TimeLog {
 	return &TimeLogRepository{DB: db}
 }
 

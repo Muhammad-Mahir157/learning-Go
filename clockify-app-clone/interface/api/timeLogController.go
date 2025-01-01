@@ -3,19 +3,18 @@ package api
 import (
 	"net/http"
 
-	"github.com/Muhammad-Mahir157/clockify-app-clone/application/interfaces"
-	"github.com/google/uuid"
-
-	responseMapper "github.com/Muhammad-Mahir157/clockify-app-clone/interface/api/dto/mapper"
-	"github.com/Muhammad-Mahir157/clockify-app-clone/interface/api/dto/request"
+	"github.com/Muhammad-Mahir157/clockify-app-clone/interface/api/dto/adaptor"
+	"github.com/Muhammad-Mahir157/clockify-app-clone/interface/api/dto/models"
+	"github.com/Muhammad-Mahir157/clockify-app-clone/usecase"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type TimeLogController struct {
-	service interfaces.TimeLogService
+	service usecase.TimeLogUsecase
 }
 
-func NewTimeLogController(app *fiber.App, timeLogService interfaces.TimeLogService) *TimeLogController {
+func NewTimeLogController(app *fiber.App, timeLogService usecase.TimeLogUsecase) *TimeLogController {
 	c := &TimeLogController{
 		service: timeLogService,
 	}
@@ -31,7 +30,7 @@ func NewTimeLogController(app *fiber.App, timeLogService interfaces.TimeLogServi
 }
 
 func (c *TimeLogController) LogNewTime(dbContext *fiber.Ctx) error {
-	controllerRequest := request.AddTimeLogRequest{}
+	controllerRequest := models.AddTimeLogRequest{}
 
 	err := dbContext.BodyParser(&controllerRequest)
 	if err != nil {
@@ -48,7 +47,7 @@ func (c *TimeLogController) LogNewTime(dbContext *fiber.Ctx) error {
 		return err
 	}
 
-	response := responseMapper.ToTimeLogResponse(newlyAddedTimeLog)
+	response := adaptor.ToTimeLogResponse(newlyAddedTimeLog)
 	return dbContext.Status(http.StatusOK).JSON(
 		&fiber.Map{
 			"message": "Time log added successfully!",
@@ -66,7 +65,7 @@ func (c *TimeLogController) GetAllTimeLogs(dbContext *fiber.Ctx) error {
 		return err
 	}
 
-	response := responseMapper.ToTimeLogListResponse(existingTimeLogs.List)
+	response := adaptor.ToTimeLogListResponse(existingTimeLogs.List)
 
 	return dbContext.Status(http.StatusOK).JSON(
 		&fiber.Map{
@@ -76,7 +75,7 @@ func (c *TimeLogController) GetAllTimeLogs(dbContext *fiber.Ctx) error {
 }
 
 func (c *TimeLogController) UpdateLoggedTime(dbContext *fiber.Ctx) error {
-	controllerRequest := request.UpdateTimeLogRequest{}
+	controllerRequest := models.UpdateTimeLogRequest{}
 
 	err := dbContext.BodyParser(&controllerRequest)
 	if err != nil {
@@ -97,7 +96,7 @@ func (c *TimeLogController) UpdateLoggedTime(dbContext *fiber.Ctx) error {
 	}
 
 	//mapping the timeLogFound to response ...
-	response := responseMapper.ToTimeLogResponse(timeLogUpdated)
+	response := adaptor.ToTimeLogResponse(timeLogUpdated)
 
 	return dbContext.Status(http.StatusOK).JSON(
 		&fiber.Map{
@@ -169,7 +168,7 @@ func (c *TimeLogController) GetLoggedTimeById(dbContext *fiber.Ctx) error {
 	}
 
 	//mapping the timeLogFound to response ...
-	response := responseMapper.ToTimeLogResponse(timeLogFound)
+	response := adaptor.ToTimeLogResponse(timeLogFound)
 	return dbContext.Status(http.StatusFound).JSON(
 		&fiber.Map{
 			"message": "Time Log found successfully",

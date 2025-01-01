@@ -1,9 +1,9 @@
-package request
+package models
 
 import (
 	"time"
 
-	"github.com/Muhammad-Mahir157/clockify-app-clone/application/common"
+	"github.com/Muhammad-Mahir157/clockify-app-clone/usecase"
 )
 
 type AddTimeLogRequest struct {
@@ -12,8 +12,8 @@ type AddTimeLogRequest struct {
 	Description string    `json:"description"`
 }
 
-func (req AddTimeLogRequest) ToAddLogTimeRequest() *common.AddTimeLogRequestModel {
-	return &common.AddTimeLogRequestModel{
+func (req AddTimeLogRequest) ToAddLogTimeRequest() *usecase.AddTimeLogRequestModel {
+	return &usecase.AddTimeLogRequestModel{
 		StartTime:   req.StartTime,
 		EndTime:     req.EndTime,
 		Description: req.Description,
