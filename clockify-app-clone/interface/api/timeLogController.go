@@ -14,17 +14,10 @@ type TimeLogController struct {
 	service usecase.TimeLogUsecase
 }
 
-func NewTimeLogController(app *fiber.App, timeLogService usecase.TimeLogUsecase) *TimeLogController {
+func NewTimeLogController(timeLogService usecase.TimeLogUsecase) *TimeLogController {
 	c := &TimeLogController{
 		service: timeLogService,
 	}
-
-	routes := app.Group("/api/")
-	routes.Post("/logTime", c.LogNewTime)
-	routes.Put("/updateLoggedTime", c.UpdateLoggedTime)
-	routes.Delete("/deleteLoggedTime/:Id", c.DeleteLoggedTime)
-	routes.Get("/getLoggedTime", c.GetAllTimeLogs)
-	routes.Get("/getLoggedTimeById/:Id", c.GetLoggedTimeById)
 
 	return c
 }
